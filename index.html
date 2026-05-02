@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Beat Lab – My Music Production Journey</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================================================
+     DESIGN SYSTEM — Beat Lab
+     Edit colours here to customise the look
+  ============================================================ */
+  :root {
+    --coral:   #FF6B6B;
+    --gold:    #FFD93D;
+    --cyan:    #4ECDC4;
+    --purple:  #C77DFF;
+    --green:   #6BCB77;
+
+    --bg:      #0D0D14;
+    --surface: #13131F;
+    --card:    #1A1A2E;
+    --border:  #2A2A42;
+    --muted:   #6B6B8A;
+    --text:    #E8E8F0;
+    --heading: #FFFFFF;
+  }
+
+  [data-theme="light"] {
+    --bg:      #F5F4F0;
+    --surface: #FFFFFF;
+    --card:    #FAFAFA;
+    --border:  #E0DED8;
+    --muted:   #8A8A9A;
+    --text:    #2D2D3A;
+    --heading: #0D0D14;
+  }
+
+  /* ---- Base ---- */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Syne', sans-serif;
+    color: var(--heading);
+  }
+
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ---- Layout ---- */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ---- Sidebar ---- */
+  #sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    transition: transform 0.3s ease, background 0.3s;
+  }
+
+  #sidebar .logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #sidebar .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  #sidebar .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--coral), var(--purple));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  #sidebar .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--heading);
+    line-height: 1.2;
+  }
+
+  #sidebar .logo-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  #sidebar nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
+
+  #sidebar .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 12px 6px;
+  }
+
+  #sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.18s;
+    margin-bottom: 2px;
+    cursor: pointer;
+  }
+
+  #sidebar nav a:hover {
+    background: var(--card);
+    color: var(--heading);
+  }
+
+  #sidebar nav a.active {
+    background: linear-gradient(135deg, rgba(255,107,107,0.15), rgba(199,125,255,0.15));
+    color: var(--coral);
+    border-left: 3px solid var(--coral);
+    padding-left: 9px;
+  }
+
+  #sidebar nav a .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* ---- Main Content ---- */
+  #main {
+    margin-left: 260px;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---- Top Bar ---- */
+  #topbar {
+    height: 64px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: background 0.3s;
+  }
+
+  #topbar .breadcrumb {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  #topbar .breadcrumb span { color: var(--heading); font-weight: 600; }
+
+  #topbar .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  /* Theme toggle */
+  .theme-btn {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    color: var(--text);
+  }
+  .theme-btn:hover { border-color: var(--coral); }
+
+  /* Streak badge */
+  .streak-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,217,61,0.2));
+    border: 1px solid rgba(255,107,107,0.3);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  /* ---- Page Sections ---- */
+  .page-section {
+    display: none;
+    padding: 40px 40px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .page-section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ---- Section Header ---- */
+  .section-header {
+    margin-bottom: 36px;
+  }
+
+  .section-header .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .section-header h1 {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .section-header p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 620px;
+    line-height: 1.7;
+  }
+
+  /* ---- Cards ---- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: rgba(255,107,107,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  }
+
+  .card-glow {
+    box-shadow: 0 0 0 1px var(--border), 0 4px 24px rgba(255,107,107,0.08);
+  }
+
+  /* ---- Grid layouts ---- */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  @media (max-width: 900px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    #main { margin-left: 0; }
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); }
+    .page-section { padding: 24px 20px 40px; }
+    #topbar { padding: 0 20px; }
+  }
+
+  /* ---- Progress Bar ---- */
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--coral), var(--purple));
+    transition: width 0.5s ease;
+  }
+
+  /* ---- Video Embed ---- */
+  .video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+    margin: 12px 0;
+  }
+  .video-wrap iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+    border-radius: 12px;
+  }
+
+  /* ---- Checklist ---- */
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    background: var(--surface);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .checklist-item:hover { border-color: var(--cyan); }
+  .checklist-item.done {
+    opacity: 0.6;
+    background: rgba(107,203,119,0.06);
+    border-color: rgba(107,203,119,0.3);
+  }
+  .checklist-item.done .item-title { text-decoration: line-through; }
+
+  .check-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+  .checklist-item.done .check-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .item-title { font-weight: 500; font-size: 14px; line-height: 1.5; }
+  .item-desc  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ---- Tags/Chips ---- */
+  .chip {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin: 2px;
+  }
+
+  /* ---- Colour utilities ---- */
+  .coral   { color: var(--coral); }
+  .gold    { color: var(--gold); }
+  .cyan    { color: var(--cyan); }
+  .purple  { color: var(--purple); }
+  .green   { color: var(--green); }
+
+  .bg-coral  { background: rgba(255,107,107,0.12); border-color: rgba(255,107,107,0.25); }
+  .bg-gold   { background: rgba(255,217,61,0.12);  border-color: rgba(255,217,61,0.25); }
+  .bg-cyan   { background: rgba(78,205,196,0.12);  border-color: rgba(78,205,196,0.25); }
+  .bg-purple { background: rgba(199,125,255,0.12); border-color: rgba(199,125,255,0.25); }
+  .bg-green  { background: rgba(107,203,119,0.12); border-color: rgba(107,203,119,0.25); }
+
+  /* ---- Quote rotator ---- */
+  .quote-card {
+    position: relative;
+    padding: 28px 32px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,107,107,0.08), rgba(199,125,255,0.08));
+    border: 1px solid rgba(255,107,107,0.2);
+    overflow: hidden;
+  }
+  .quote-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 16px;
+    font-size: 120px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: rgba(255,107,107,0.1);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .quote-text { font-size: 17px; font-style: italic; font-weight: 400; line-height: 1.7; position: relative; z-index: 1; }
+  .quote-author { font-size: 13px; color: var(--muted); margin-top: 10px; font-weight: 600; }
+
+  /* ---- Stat cards ---- */
+  .stat-card {
+    padding: 20px 24px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .stat-card .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-card .stat-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ---- Challenge cards ---- */
+  .challenge-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+  }
+  .challenge-card:hover { border-color: var(--purple); }
+  .challenge-card.completed {
+    border-color: rgba(107,203,119,0.4);
+    background: rgba(107,203,119,0.04);
+  }
+
+  .week-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(255,107,107,0.15);
+    color: var(--coral);
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .challenge-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .challenge-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .complete-btn {
+    margin-top: 12px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .complete-btn:hover { border-color: var(--green); color: var(--green); }
+  .complete-btn.done  { background: rgba(107,203,119,0.12); border-color: var(--green); color: var(--green); }
+
+  /* Notes textarea */
+  .notes-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    resize: vertical;
+    margin-top: 8px;
+    transition: border-color 0.2s;
+  }
+  .notes-input:focus { outline: none; border-color: var(--purple); }
+
+  /* ---- Pathway cards ---- */
+  .pathway-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pathway-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+  }
+  .pathway-card.coral::after  { background: var(--coral); }
+  .pathway-card.gold::after   { background: var(--gold); }
+  .pathway-card.cyan::after   { background: var(--cyan); }
+  .pathway-card.purple::after { background: var(--purple); }
+  .pathway-card.green::after  { background: var(--green); }
+
+  .pathway-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.25); }
+  .pathway-icon { font-size: 32px; margin-bottom: 14px; }
+  .pathway-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .pathway-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ---- Resource link ---- */
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 14px;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+  }
+  .resource-link:hover { border-color: var(--cyan); color: var(--heading); transform: translateX(4px); }
+  .resource-link .rl-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+  .resource-link .rl-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* ---- Waveform decorative ---- */
+  .waveform-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    opacity: 0.04;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* ---- Mobile hamburger ---- */
+  #hamburger {
+    display: none;
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+  }
+  @media (max-width: 600px) {
+    #hamburger { display: flex; }
+  }
+
+  /* Sidebar overlay for mobile */
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+  #sidebar-overlay.show { display: block; }
+
+  /* ---- Misc ---- */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  .expand-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--coral);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.2s;
+  }
+  .expand-btn:hover { opacity: 0.7; }
+
+  .collapsible { display: none; }
+  .collapsible.open { display: block; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- Mobile Overlay -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div id="app">
+
+  <!-- ====================================================
+       SIDEBAR
+  ==================================================== -->
+  <aside id="sidebar">
+    <div class="logo">
+      <a class="logo-mark">
+        <div class="logo-icon">🎛️</div>
+        <div>
+          <div class="logo-text">Beat Lab</div>
+          <div class="logo-sub">My Music Production Journey</div>
+        </div>
+      </a>
+    </div>
+
+    <nav>
+      <div class="nav-section-label">Start Here</div>
+      <a onclick="showSection('home')" class="active">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+
+      <div class="nav-section-label">Learn</div>
+      <a onclick="showSection('logic')">
+        <span class="nav-icon">🎧</span> Logic Pro Basics
+      </a>
+      <a onclick="showSection('skills')">
+        <span class="nav-icon">🎸</span> Core Skills & Technique
+      </a>
+      <a onclick="showSection('engineering')">
+        <span class="nav-icon">🎚️</span> Audio Engineering Areas
+      </a>
+
+      <div class="nav-section-label">Practice</div>
+      <a onclick="showSection('challenges')">
+        <span class="nav-icon">🏆</span> Weekly Challenges
+      </a>
+
+      <div class="nav-section-label">Future</div>
+      <a onclick="showSection('business')">
+        <span class="nav-icon">💡</span> Business & Career
+      </a>
+      <a onclick="showSection('resources')">
+        <span class="nav-icon">📚</span> Resources & Next Steps
+      </a>
+
+      <div class="nav-section-label">For Dad</div>
+      <a onclick="showSection('mentor')">
+        <span class="nav-icon">👨‍👧</span> Parent / Mentor Notes
+      </a>
+    </nav>
+
+    <div style="padding:16px 20px; border-top:1px solid var(--border); font-size:11px; color:var(--muted); line-height:1.6;">
+      🎂 Built for <strong style="color:var(--coral)">your 14th Birthday</strong><br/>
+      May 2026 · Made with 💖
+    </div>
+  </aside>
+
+  <!-- ====================================================
+       MAIN
+  ==================================================== -->
+  <div id="main">
+
+    <!-- Top Bar -->
+    <header id="topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button id="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="breadcrumb">Beat Lab / <span id="breadcrumb-text">Dashboard</span></div>
+      </div>
+      <div class="topbar-right">
+        <div class="streak-badge" id="streak-display">🔥 <span id="streak-count">0</span> day streak</div>
+        <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode" id="theme-btn">🌙</button>
+      </div>
+    </header>
+
+    <!-- ================================================
+         1. HOME / DASHBOARD
+    ================================================ -->
+    <section class="page-section active" id="home">
+      <div class="section-header">
+        <div class="tag bg-coral coral" style="border:1px solid;">✨ Welcome Back</div>
+        <h1>Hey <span id="user-name-display" style="color:var(--coral)">there</span>! 👋</h1>
+        <p>Your music production journey starts right here. Every great producer began exactly where you are now — curious, creative, and ready to make something amazing.</p>
+      </div>
+
+      <!-- Name setup (shown on first visit) -->
+      <div id="name-setup" class="card" style="margin-bottom:24px; display:none; border-color:rgba(255,107,107,0.3);">
+        <h3 style="margin-bottom:12px;">What's your name? 🎤</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <input type="text" id="name-input" placeholder="Enter your name..." 
+            style="flex:1; min-width:200px; padding:10px 16px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px;" />
+          <button onclick="saveName()" 
+            style="padding:10px 20px; border-radius:10px; border:none; background:var(--coral); color:white; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; cursor:pointer;">
+            Let's Go! 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="grid-4" style="margin-bottom:28px;">
+        <div class="stat-card">
+          <div class="stat-value coral" id="stat-completed">0</div>
+          <div class="stat-label">Lessons Completed</div>
+          <div class="progress-bar" style="margin-top:12px;"><div class="progress-fill" id="stat-bar" style="width:0%"></div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value gold" id="stat-challenges">0</div>
+          <div class="stat-label">Challenges Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value cyan" id="stat-streak">0</div>
+          <div class="stat-label">Day Streak 🔥</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value purple">8</div>
+          <div class="stat-label">Sections to Explore</div>
+        </div>
+      </div>
+
+      <!-- Quote -->
+      <div class="quote-card" style="margin-bottom:28px;">
+        <div class="quote-text" id="quote-text">Music is the shorthand of emotion.</div>
+        <div class="quote-author" id="quote-author">— Leo Tolstoy</div>
+      </div>
+
+      <!-- Today's task + quick links -->
+      <div class="grid-2" style="margin-bottom:28px;">
+        <div class="card">
+          <h3 style="margin-bottom:16px;">🎯 Suggested for Today</h3>
+          <div class="checklist-item" style="cursor:default; margin-bottom:8px;">
+            <span style="font-size:20px;">🎧</span>
+            <div>
+              <div class="item-title">Watch: Logic Pro Beginner Basics</div>
+              <div class="item-desc">Get familiar with the interface — 20 mins</div>
+            </div>
+          </div>
+          <div class="checklist-item" style="cursor:default; margin-bottom:8px;">
+            <span style="font-size:20px;">🎹</span>
+            <div>
+              <div class="item-title">Practice: Play 3 chord progressions</div>
+              <div class="item-desc">Use your Clavinova or Akai keyboard</div>
+            </div>
+          </div>
+          <div class="checklist-item" style="cursor:default;">
+            <span style="font-size:20px;">🏆</span>
+            <div>
+              <div class="item-title">Challenge: Create your first 4-bar loop</div>
+              <div class="item-desc">Go to Weekly Challenges to get started</div>
+            </div>
+          </div>
+          <button onclick="showSection('challenges')" 
+            style="margin-top:16px; padding:10px 18px; border-radius:10px; border:1px solid var(--coral); background:transparent; color:var(--coral); font-family:'Syne',sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.2s;"
+            onmouseover="this.style.background='var(--coral)';this.style.color='white'"
+            onmouseout="this.style.background='transparent';this.style.color='var(--coral)'">
+            View All Challenges →
+          </button>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:16px;">⚡ Quick Navigate</h3>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <a class="resource-link" onclick="showSection('logic'); return false;" href="#">
+              <span class="rl-icon">🎧</span>
+              <div>
+                <div>Logic Pro Basics</div>
+                <div class="rl-meta">Start your DAW journey here</div>
+              </div>
+              <span style="margin-left:auto; color:var(--muted);">→</span>
+            </a>
+            <a class="resource-link" onclick="showSection('skills'); return false;" href="#">
+              <span class="rl-icon">🎸</span>
+              <div>
+                <div>Core Skills & Technique</div>
+                <div class="rl-meta">Music theory, recording, mixing</div>
+              </div>
+              <span style="margin-left:auto; color:var(--muted);">→</span>
+            </a>
+            <a class="resource-link" onclick="showSection('engineering'); return false;" href="#">
+              <span class="rl-icon">🎚️</span>
+              <div>
+                <div>Career Pathways</div>
+                <div class="rl-meta">Studio, game audio, film & more</div>
+              </div>
+              <span style="margin-left:auto; color:var(--muted);">→</span>
+            </a>
+            <a class="resource-link" onclick="showSection('resources'); return false;" href="#">
+              <span class="rl-icon">📚</span>
+              <div>
+                <div>Resources & Gear Tips</div>
+                <div class="rl-meta">Your studio setup explained</div>
+              </div>
+              <span style="margin-left:auto; color:var(--muted);">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Motivational banner -->
+      <div style="background:linear-gradient(135deg,rgba(255,107,107,0.1),rgba(199,125,255,0.1),rgba(78,205,196,0.1)); border:1px solid rgba(255,107,107,0.2); border-radius:16px; padding:28px 32px; text-align:center;">
+        <div style="font-size:32px; margin-bottom:10px;">🌟</div>
+        <h3 style="font-size:20px; margin-bottom:8px;">You're already ahead of the game</h3>
+        <p style="color:var(--muted); font-size:14px; max-width:500px; margin:0 auto; line-height:1.7;">
+          Most professional producers didn't start until they were 18 or older. 
+          You have the gear, the talent, and the passion — all you need to do is show up, 
+          keep experimenting, and enjoy every moment of the process.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================
+         2. LOGIC PRO BASICS
+    ================================================ -->
+    <section class="page-section" id="logic">
+      <div class="section-header">
+        <div class="tag bg-cyan cyan" style="border:1px solid;">Module 1</div>
+        <h1>Logic Pro Basics 🎧</h1>
+        <p>Logic Pro is your creative hub. These hand-picked tutorials will take you from "what's a DAW?" to recording, editing, and producing your first full track.</p>
+      </div>
+
+      <!-- Core Skills Checklist -->
+      <div class="card" style="margin-bottom:28px;">
+        <h3 style="margin-bottom:4px;">📋 Core Skills Checklist</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Tick each skill as you learn it — progress is saved automatically.</p>
+
+        <div id="logic-checklist">
+          <!-- Items injected by JS -->
+        </div>
+      </div>
+
+      <!-- Videos -->
+      <h2 style="margin-bottom:6px; font-size:22px;">🎬 Recommended Tutorials</h2>
+      <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">All free on YouTube. Watch in order for the best learning experience.</p>
+
+      <!-- Video 1 -->
+      <div class="card card-glow" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge bg-coral coral" style="border:1px solid;">WATCH FIRST</span>
+          <span style="font-size:12px; color:var(--muted);">~60–90 min</span>
+        </div>
+        <h3 style="font-size:17px; margin-bottom:8px;">Logic Pro 2026: Complete Beginner Basics Tutorial</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          The perfect starting point. Covers the full Logic Pro interface, how to set up your project, what all the buttons actually do, 
+          and how to make your first sounds. Don't skip this one — it'll save you hours of confusion later!
+        </p>
+        <!-- 
+          ✏️ CUSTOMISE: Replace the YouTube video ID below.
+          The video ID is the bit after "v=" in the YouTube URL.
+          e.g. https://www.youtube.com/watch?v=XXXXXXXX → use XXXXXXXX
+        -->
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/5QcNHMqj01Y" 
+            title="Logic Pro Beginner Tutorial" allowfullscreen 
+            loading="lazy"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+          <span class="chip bg-coral coral" style="border:1px solid;">Interface Tour</span>
+          <span class="chip bg-cyan cyan" style="border:1px solid;">Project Setup</span>
+          <span class="chip bg-gold gold" style="border:1px solid;">First Track</span>
+        </div>
+      </div>
+
+      <!-- Video 2 -->
+      <div class="card card-glow" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge bg-purple purple" style="border:1px solid;">HIGHLY RECOMMENDED</span>
+          <span style="font-size:12px; color:var(--muted);">~2–3 hours (free course)</span>
+        </div>
+        <h3 style="font-size:17px; margin-bottom:8px;">The BEST Logic Pro Tutorial For Beginners (Free Full Course)</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          A proper deep-dive free course — covers MIDI, audio recording, Apple Loops, the mixer, and basic effects. 
+          Brilliant if you want to go from beginner to confident in one sitting. Make notes as you go!
+        </p>
+        <!-- ✏️ CUSTOMISE: Replace video ID -->
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/LCEoZFM1aWU" 
+            title="Logic Pro Full Beginner Course" allowfullscreen 
+            loading="lazy"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+          <span class="chip bg-purple purple" style="border:1px solid;">MIDI Basics</span>
+          <span class="chip bg-cyan cyan" style="border:1px solid;">Audio Recording</span>
+          <span class="chip bg-gold gold" style="border:1px solid;">Apple Loops</span>
+          <span class="chip bg-coral coral" style="border:1px solid;">Mixer Intro</span>
+        </div>
+      </div>
+
+      <!-- Video 3 -->
+      <div class="card card-glow" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge bg-gold gold" style="border:1px solid;">MIDI KEYBOARD & PADS</span>
+          <span style="font-size:12px; color:var(--muted);">~30–45 min</span>
+        </div>
+        <h3 style="font-size:17px; margin-bottom:8px;">Logic Pro + MIDI Keyboard Setup — Akai MPK & More</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          Specifically covers hooking up an Akai MIDI keyboard/pad controller to Logic Pro, setting up drum pads, 
+          and recording MIDI in real-time. Since you have an Akai, this one is directly relevant to your setup!
+        </p>
+        <!-- ✏️ CUSTOMISE: Replace video ID -->
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/FeM6VBZL6LY" 
+            title="Logic Pro MIDI Setup" allowfullscreen 
+            loading="lazy"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+          <span class="chip bg-gold gold" style="border:1px solid;">Akai Setup</span>
+          <span class="chip bg-green green" style="border:1px solid;">Drum Pads</span>
+          <span class="chip bg-cyan cyan" style="border:1px solid;">MIDI Recording</span>
+        </div>
+      </div>
+
+      <!-- Video 4 -->
+      <div class="card card-glow" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge bg-green green" style="border:1px solid;">RECORDING AUDIO</span>
+          <span style="font-size:12px; color:var(--muted);">~25 min</span>
+        </div>
+        <h3 style="font-size:17px; margin-bottom:8px;">Recording Piano, Guitar & Vocals in Logic Pro</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          Practical guide to actually capturing real instruments — setting input levels, avoiding clipping, 
+          understanding gain staging. Vital before you start recording your Clavinova, guitars, or voice.
+        </p>
+        <!-- ✏️ CUSTOMISE: Replace video ID -->
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/WiSIWmfPmS4" 
+            title="Recording Audio in Logic Pro" allowfullscreen 
+            loading="lazy"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+          <span class="chip bg-green green" style="border:1px solid;">Audio Input</span>
+          <span class="chip bg-coral coral" style="border:1px solid;">Gain Staging</span>
+          <span class="chip bg-purple purple" style="border:1px solid;">Track Recording</span>
+        </div>
+      </div>
+
+      <!-- Video 5 -->
+      <div class="card card-glow" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <span class="badge bg-cyan cyan" style="border:1px solid;">APPLE LOOPS & EDITING</span>
+          <span style="font-size:12px; color:var(--muted);">~20 min</span>
+        </div>
+        <h3 style="font-size:17px; margin-bottom:8px;">Using Apple Loops & the Logic Pro Loop Library</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          Apple Loops are a secret weapon — thousands of professional-quality samples that automatically match your project tempo and key. 
+          Learn how to browse, drag, and layer them to quickly build interesting tracks while you develop your production skills.
+        </p>
+        <!-- ✏️ CUSTOMISE: Replace video ID -->
+        <div class="video-wrap">
+          <iframe src="https://www.youtube.com/embed/KI9MExnI0w0" 
+            title="Apple Loops Logic Pro" allowfullscreen 
+            loading="lazy"></iframe>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+          <span class="chip bg-cyan cyan" style="border:1px solid;">Apple Loops</span>
+          <span class="chip bg-gold gold" style="border:1px solid;">Loop Library</span>
+          <span class="chip bg-coral coral" style="border:1px solid;">Beat Building</span>
+        </div>
+      </div>
+
+      <!-- More resources -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(78,205,196,0.06),rgba(199,125,255,0.06)); border-color:rgba(78,205,196,0.25);">
+        <h3 style="margin-bottom:12px;">🔗 More Great Channels to Follow</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">Search these on YouTube for a huge library of Logic Pro tutorials:</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:10px;">
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">MusicTechHelpGuy</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Ultimate Logic Pro guides, very thorough</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">KC Sounds</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Great Logic Pro workflow tips</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">Tony Holiday</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Beginner-friendly, music theory included</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">Produce Like The Pros</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Mixing & mastering focus</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">In The Mix</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Deep audio engineering dives</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--card); border-radius:10px; border:1px solid var(--border);">
+            <div style="font-weight:600; font-size:14px;">Sadowick Production</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:3px;">Electronic music & sound design</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         3. CORE SKILLS & TECHNIQUE
+    ================================================ -->
+    <section class="page-section" id="skills">
+      <div class="section-header">
+        <div class="tag bg-purple purple" style="border:1px solid;">Module 2</div>
+        <h1>Core Skills & Technique 🎸</h1>
+        <p>The building blocks of great music production. Master these and everything else becomes much easier — and much more fun.</p>
+      </div>
+
+      <!-- Music Theory -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,107,107,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🎵</div>
+          <div>
+            <h3 style="font-size:18px;">Music Theory for Producers</h3>
+            <p style="font-size:13px; color:var(--muted);">You don't need to be a theory nerd — just know enough to create</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--coral);">Chords & Harmony</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--coral);">Major & minor chords — the foundation of all music</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--coral);">Common chord progressions: I–V–vi–IV, ii–V–I</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--coral);">7th chords — add colour and emotion</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--coral);">Transposing to different keys</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--cyan);">Melody & Rhythm</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--cyan);">Scales: major, minor, pentatonic — great for melodies</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--cyan);">Rhythm: time signatures, note values, groove</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--cyan);">Song structure: intro, verse, chorus, bridge, outro</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px; border-left:3px solid var(--cyan);">Tension & release — the secret of memorable hooks</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:16px; padding:14px 16px; background:rgba(255,217,61,0.06); border:1px solid rgba(255,217,61,0.2); border-radius:10px;">
+          <span style="font-weight:600; color:var(--gold); font-size:13px;">💡 Pro tip: </span>
+          <span style="font-size:13px;">Start a "chord journal" — every time you find a chord combo you love in a song, write it down. Over time you'll have a personal toolkit of go-to progressions.</span>
+        </div>
+      </div>
+
+      <!-- Recording Technique -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(78,205,196,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🎤</div>
+          <div>
+            <h3 style="font-size:18px;">Recording Technique</h3>
+            <p style="font-size:13px; color:var(--muted);">Your studio has amazing gear — here's how to use it well</p>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="font-size:24px; margin-bottom:8px;">🎹</div>
+            <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Clavinova / MIDI Piano</div>
+            <div style="font-size:12px; color:var(--muted); line-height:1.6;">Connect via MIDI or USB. Set Logic's track to "Software Instrument" and choose a piano sound. Record-enable the track, hit record, and play!</div>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="font-size:24px; margin-bottom:8px;">🎸</div>
+            <div style="font-weight:600; font-size:14px; margin-bottom:6px;">Guitar Recording</div>
+            <div style="font-size:12px; color:var(--muted); line-height:1.6;">Use an audio interface (or the studio's DI box). Plug in, set input level so the meter hits around –12dB to –6dB. Logic has great built-in guitar amp sims — try Amp Designer!</div>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="font-size:24px; margin-bottom:8px;">🥁</div>
+            <div style="font-weight:600; font-size:14px; margin-bottom:6px;">V-Drums / Drum Machine</div>
+            <div style="font-size:12px; color:var(--muted); line-height:1.6;">V-Drums send MIDI — connect to Logic and use your own drum kit sound or Drummer plugin. Great for realistic-feeling rhythms and live drum performance.</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <h4 style="font-size:14px; margin-bottom:10px; color:var(--coral);">🎚️ The Golden Rules of Recording</h4>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">📊 <strong>Gain staging:</strong> levels should peak at –12 to –6dB, never clip (red)</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🔇 <strong>Quiet room:</strong> close windows, turn off fans before recording</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎧 <strong>Monitor with headphones:</strong> Sony MDR-7506 are professional-grade, trust them</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">💾 <strong>Save often:</strong> Cmd+S every few minutes, and use Logic's Auto-Save</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Effects & Processing -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(199,125,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🎛️</div>
+          <div>
+            <h3 style="font-size:18px;">Effects & Processing</h3>
+            <p style="font-size:13px; color:var(--muted);">The tools that transform a raw recording into something polished</p>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span class="chip bg-coral coral" style="border:1px solid; font-size:12px; font-weight:700;">EQ</span>
+              <span style="font-weight:600; font-size:14px;">Equalisation</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;">EQ lets you boost or cut specific frequencies. Think of it as a "tone control" on steroids. Use <strong style="color:var(--text)">Channel EQ</strong> in Logic. High-pass filter on vocals to remove rumble. Boost highs on a guitar to add presence. Cut muddy frequencies (around 200–400Hz) when things sound boomy.</p>
+          </div>
+
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span class="chip bg-cyan cyan" style="border:1px solid; font-size:12px; font-weight:700;">COMP</span>
+              <span style="font-weight:600; font-size:14px;">Compression</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;">Compression evens out the volume of a sound — loud parts get quieter, so everything sits at a consistent level. Logic's <strong style="color:var(--text)">Compressor</strong> plugin is excellent. Start with the "Platinum Analog Tape" preset on vocals. Compression makes drums punchier and vocals more "upfront" in a mix.</p>
+          </div>
+
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span class="chip bg-purple purple" style="border:1px solid; font-size:12px; font-weight:700;">REVERB</span>
+              <span style="font-weight:600; font-size:14px;">Reverb & Delay</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;"><strong style="color:var(--text)">Reverb</strong> makes a sound feel like it's in a room or hall — adds depth and space. Logic's <strong style="color:var(--text)">ChromaVerb</strong> looks and sounds amazing. <strong style="color:var(--text)">Delay</strong> creates echoes — Tape Delay in Logic sounds warm and musical. Rule of thumb: use reverb subtly; too much makes a mix sound like a bathroom recording!</p>
+          </div>
+
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span class="chip bg-gold gold" style="border:1px solid; font-size:12px; font-weight:700;">AUTO</span>
+              <span style="font-weight:600; font-size:14px;">Automation</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); line-height:1.6;">Automation lets you record changes over time — like a volume fade, a filter sweep, or a pan that moves from left to right. Press <strong style="color:var(--text)">A</strong> in Logic to see automation lanes. Try automating the volume of your chorus to be 2dB louder than the verse — it makes a huge difference!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mixing & Mastering -->
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(107,203,119,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🎚️</div>
+          <div>
+            <h3 style="font-size:18px;">Mixing & Mastering Basics</h3>
+            <p style="font-size:13px; color:var(--muted);">Make your tracks sound clean, balanced, and ready to share</p>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--green);">Mixing</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Balance volume levels — everything should be audible</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Pan instruments left/right for width (bass usually stays centre)</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">EQ to give each sound its own frequency "space"</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Add reverb/delay to create depth and dimension</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Reference your mix on headphones AND speakers</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--purple);">Mastering</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Mastering is the final step — it makes your track "release ready"</li>
+              <li style="li;font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Use Logic's <strong>Master Bus</strong> (Stereo Out channel)</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Add a limiter (Adaptive Limiter) to prevent clipping</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Target –14 LUFS for streaming (Spotify, Apple Music)</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Compare your master to a professional track you love</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sound Design -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(199,125,255,0.06),rgba(78,205,196,0.06)); border-color:rgba(199,125,255,0.25);">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div style="font-size:28px;">🌊</div>
+          <div>
+            <h3 style="font-size:18px;">Sound Design Fundamentals</h3>
+            <p style="font-size:13px; color:var(--muted);">Creating sounds from scratch — the ultimate producer superpower</p>
+          </div>
+        </div>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:16px; line-height:1.7;">
+          Sound design means building sounds using synthesisers. Logic Pro comes with <strong style="color:var(--text)">ES2</strong>, <strong style="color:var(--text)">Alchemy</strong> (which is incredible — one of the best synths ever made), and <strong style="color:var(--text)">Retro Synth</strong>. 
+          Start by loading a preset and slowly changing one knob at a time to hear what each control does.
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px;">
+          <div style="padding:12px; background:var(--card); border-radius:10px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:20px; margin-bottom:6px;">〰️</div>
+            <div style="font-weight:600; font-size:13px;">Oscillators</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:3px;">The raw sound source</div>
+          </div>
+          <div style="padding:12px; background:var(--card); border-radius:10px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:20px; margin-bottom:6px;">📐</div>
+            <div style="font-weight:600; font-size:13px;">Filters</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:3px;">Shape the tone/brightness</div>
+          </div>
+          <div style="padding:12px; background:var(--card); border-radius:10px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:20px; margin-bottom:6px;">📈</div>
+            <div style="font-weight:600; font-size:13px;">ADSR Envelope</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:3px;">Attack, Decay, Sustain, Release</div>
+          </div>
+          <div style="padding:12px; background:var(--card); border-radius:10px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:20px; margin-bottom:6px;">🔄</div>
+            <div style="font-weight:600; font-size:13px;">LFO</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:3px;">Modulate & wobble sounds</div>
+          </div>
+          <div style="padding:12px; background:var(--card); border-radius:10px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:20px; margin-bottom:6px;">✨</div>
+            <div style="font-weight:600; font-size:13px;">Alchemy (Logic)</div>
+            <div style="font-size:11px; color:var(--muted); margin-top:3px;">World-class sample synthesis</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         4. AUDIO ENGINEERING AREAS
+    ================================================ -->
+    <section class="page-section" id="engineering">
+      <div class="section-header">
+        <div class="tag bg-gold gold" style="border:1px solid;">Module 3</div>
+        <h1>Audio Engineering Areas 🎚️</h1>
+        <p>Audio production has so many exciting paths. Explore each one — you might be surprised which one sparks something in you. Many professionals work across several areas.</p>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px;">
+
+        <div class="pathway-card coral">
+          <div class="pathway-icon">🏢</div>
+          <div class="pathway-title">Studio Production & Recording</div>
+          <div class="pathway-desc">Working in a recording studio to capture and produce music. Involves mic placement, session management, working with artists, mixing, and mastering. This is the "classic" music producer/engineer path.</div>
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip bg-coral coral" style="border:1px solid; font-size:11px;">Mixing</span>
+            <span class="chip bg-coral coral" style="border:1px solid; font-size:11px;">Mastering</span>
+            <span class="chip bg-coral coral" style="border:1px solid; font-size:11px;">Session Work</span>
+          </div>
+        </div>
+
+        <div class="pathway-card gold">
+          <div class="pathway-icon">🔊</div>
+          <div class="pathway-title">Live Sound Engineering</div>
+          <div class="pathway-desc">Running sound at concerts, theatres, and events. Uses mixing desks, PA systems, stage monitors, and in-ear monitors. Fast-paced, social, and every show is different. Great for people who love live music AND tech.</div>
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip bg-gold gold" style="border:1px solid; font-size:11px;">FOH Engineer</span>
+            <span class="chip bg-gold gold" style="border:1px solid; font-size:11px;">Monitor Mixing</span>
+            <span class="chip bg-gold gold" style="border:1px solid; font-size:11px;">PA Systems</span>
+          </div>
+        </div>
+
+        <div class="pathway-card purple">
+          <div class="pathway-icon">🎮</div>
+          <div class="pathway-title">Game Audio</div>
+          <div class="pathway-desc">Creating sound effects, music, and interactive soundscapes for video games. Uses tools like Wwise and FMOD alongside your DAW. Games need sounds that react to player actions — a unique creative challenge! One of the fastest-growing areas.</div>
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip bg-purple purple" style="border:1px solid; font-size:11px;">Sound Design</span>
+            <span class="chip bg-purple purple" style="border:1px solid; font-size:11px;">Wwise / FMOD</span>
+            <span class="chip bg-purple purple" style="border:1px solid; font-size:11px;">Interactive Music</span>
+          </div>
+          <div style="margin-top:12px; padding:10px; background:rgba(199,125,255,0.08); border-radius:8px; border:1px solid rgba(199,125,255,0.2);">
+            <span style="font-size:12px; color:var(--purple); font-weight:600;">⭐ Hot career right now</span>
+            <span style="font-size:12px; color:var(--muted);"> — game audio is booming and needs talented producers with your skillset!</span>
+          </div>
+        </div>
+
+        <div class="pathway-card cyan">
+          <div class="pathway-icon">🎬</div>
+          <div class="pathway-title">TV, Film & Broadcast</div>
+          <div class="pathway-desc">Composing and producing music for film, TV shows, trailers, documentaries, and radio. Includes sync licensing (getting your music placed in media), library music production, and working to picture — matching music to on-screen action.</div>
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip bg-cyan cyan" style="border:1px solid; font-size:11px;">Sync Licensing</span>
+            <span class="chip bg-cyan cyan" style="border:1px solid; font-size:11px;">Score to Picture</span>
+            <span class="chip bg-cyan cyan" style="border:1px solid; font-size:11px;">Library Music</span>
+          </div>
+        </div>
+
+        <div class="pathway-card green">
+          <div class="pathway-icon">📺</div>
+          <div class="pathway-title">Advertising & Commercial Music</div>
+          <div class="pathway-desc">Writing short-form music for adverts, brand campaigns, and commercials. Working to tight briefs, fast turnarounds, and specific emotional or brand tones. Well-paid when you establish yourself — a successful ad jingle can earn significant royalties.</div>
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip bg-green green" style="border:1px solid; font-size:11px;">Jingles</span>
+            <span class="chip bg-green green" style="border:1px solid; font-size:11px;">Brand Music</span>
+            <span class="chip bg-green green" style="border:1px solid; font-size:11px;">Brief Writing</span>
+          </div>
+        </div>
+
+        <div class="pathway-card" style="background:var(--card); border-color:rgba(255,107,107,0.2);">
+          <div class="pathway-icon">🔊</div>
+          <div class="pathway-title coral">Other Exciting Pathways</div>
+          <div class="pathway-desc">The audio world has so many niches!</div>
+          <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎙️ <strong>Podcast Production</strong> — a booming industry with great freelance potential</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🔔 <strong>Sonic Branding</strong> — creating sounds for brands (Intel chime, Apple startup)</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">📱 <strong>App & UI Sound Design</strong> — the sounds phones and apps make</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎭 <strong>Theatre Sound Design</strong> — sound for stage productions</div>
+            <div style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎓 <strong>Music Technology Teaching</strong> — helping others learn what you know</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="padding:24px; background:linear-gradient(135deg,rgba(78,205,196,0.08),rgba(107,203,119,0.08)); border:1px solid rgba(78,205,196,0.25); border-radius:16px;">
+        <h3 style="margin-bottom:10px;">🗺️ Which Path is Right for You?</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7;">
+          The honest answer? You don't need to choose yet — and many professionals do several of these simultaneously. 
+          The best approach is to try them all through your challenges and projects. 
+          Make a game sound effect, write a 30-second jingle, score a short video clip. 
+          See what excites you most, then follow that thread.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================================================
+         5. WEEKLY CHALLENGES
+    ================================================ -->
+    <section class="page-section" id="challenges">
+      <div class="section-header">
+        <div class="tag bg-green green" style="border:1px solid;">Practice</div>
+        <h1>Weekly Challenges 🏆</h1>
+        <p>The fastest way to improve is to make things. These progressive challenges build your skills week by week — tick them off as you go. Your progress is saved!</p>
+      </div>
+
+      <div id="challenges-list">
+        <!-- Injected by JS -->
+      </div>
+    </section>
+
+    <!-- ================================================
+         6. BUSINESS & CAREER
+    ================================================ -->
+    <section class="page-section" id="business">
+      <div class="section-header">
+        <div class="tag bg-coral coral" style="border:1px solid;">Career</div>
+        <h1>Business & Career 💡</h1>
+        <p>Knowing the business side of music early gives you a massive advantage. Most talented artists struggle because they don't understand this stuff — you will.</p>
+      </div>
+
+      <!-- Industry Reality -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">🌍 The Reality of the Music Industry</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:16px;">
+          The music industry is exciting, rewarding, and genuinely pays well for skilled professionals — but it's not like a standard job. 
+          Here's what to expect:
+        </p>
+        <div class="grid-2">
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--coral);">Challenges to know about</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">📊 Income can be variable, especially early on</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🤝 Networking is genuinely important — who you know matters</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">💻 Most work is freelance — you'll be self-employed</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🔄 The industry changes fast — keep learning constantly</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--green);">Reasons to be excited</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎮 Game audio, TV, and advertising all pay extremely well</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🌐 You can work from anywhere — including your home studio</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">🎓 Skills transfer across many industries (film, tech, media)</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">✨ Every day is different and genuinely creative</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copyright & PRS -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">© Copyright, PRS & Licensing</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; border-left:3px solid var(--coral);">
+            <strong style="font-size:14px;">Copyright</strong>
+            <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">When you write and record an original piece of music, you automatically own the copyright. This means nobody can use your music without your permission. In the UK, copyright lasts for 70 years after the composer's death.</p>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; border-left:3px solid var(--gold);">
+            <strong style="font-size:14px;">PRS for Music & MCPS</strong>
+            <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;"><strong style="color:var(--text)">PRS</strong> collects royalties when your music is performed or broadcast publicly (TV, radio, live venues). <strong style="color:var(--text)">MCPS</strong> collects mechanical royalties when your music is reproduced (CDs, streaming, downloads). You should register with PRS as soon as you release music.</p>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; border-left:3px solid var(--cyan);">
+            <strong style="font-size:14px;">Sync Licensing</strong>
+            <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">Synchronisation licensing is when your music is used in film, TV, games, or adverts. This is one of the best income sources for composers — one well-placed sync can earn thousands of pounds.</p>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; border-left:3px solid var(--purple);">
+            <strong style="font-size:14px;">Metadata</strong>
+            <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">Always embed metadata in your audio files — your name, composition title, year, ISRC code, and contact details. This ensures you get paid even if your music is shared without attribution. Logic Pro can embed this when you export.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">🎨 Building Your Portfolio & Showreel</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:16px;">
+          Your portfolio is your greatest sales tool. Start building it from day one — even rough early tracks show growth and commitment.
+        </p>
+        <div class="grid-3">
+          <div style="padding:16px; background:var(--surface); border-radius:12px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:28px; margin-bottom:8px;">🎵</div>
+            <strong style="font-size:14px;">SoundCloud</strong>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px;">Free to start, great for sharing tracks and getting feedback from the music community</p>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:28px; margin-bottom:8px;">📺</div>
+            <strong style="font-size:14px;">YouTube Channel</strong>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px;">Share your production process — "making a beat" videos get great views</p>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; text-align:center; border:1px solid var(--border);">
+            <div style="font-size:28px; margin-bottom:8px;">🌐</div>
+            <strong style="font-size:14px;">Simple Website</strong>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px;">Linktree, Wix, or Squarespace — a landing page with your best work and contact details</p>
+          </div>
+        </div>
+        <div style="margin-top:16px; padding:14px 16px; background:rgba(255,217,61,0.06); border:1px solid rgba(255,217,61,0.2); border-radius:10px;">
+          <span style="font-weight:600; color:var(--gold);">📌 Portfolio Tip: </span>
+          <span style="font-size:13px;">Quality beats quantity. 5 great tracks are more impressive than 20 average ones. Keep your best work front and centre.</span>
+        </div>
+      </div>
+
+      <!-- Career Routes -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(255,107,107,0.06),rgba(199,125,255,0.06)); border-color:rgba(255,107,107,0.2);">
+        <h3 style="font-size:18px; margin-bottom:16px;">🛤️ Career Routes to Explore</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="padding:14px 16px; background:var(--card); border-radius:10px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:22px; flex-shrink:0;">🎓</span>
+            <div>
+              <strong style="font-size:14px;">Degree / BTEC</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:3px;">Music Technology, Music Production, or Audio Engineering degrees at unis like BIMM, LIPA, Leeds, Coventry. BTECs at local colleges are also very solid and industry-respected.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--card); border-radius:10px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:22px; flex-shrink:0;">🔧</span>
+            <div>
+              <strong style="font-size:14px;">Apprenticeships</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:3px;">Creative & Cultural Skills run audio/production apprenticeships. You earn while you learn, get industry experience, and come out with a qualification. Highly recommended.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--card); border-radius:10px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:22px; flex-shrink:0;">💻</span>
+            <div>
+              <strong style="font-size:14px;">Self-Taught / Portfolio Route</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:3px;">Many successful producers are entirely self-taught. If your portfolio is strong enough, it often matters more than a degree — especially in game audio and online music.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--card); border-radius:10px; display:flex; align-items:flex-start; gap:12px;">
+            <span style="font-size:22px; flex-shrink:0;">🤝</span>
+            <div>
+              <strong style="font-size:14px;">Networking & Work Experience</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:3px;">Contact local studios, radio stations, game companies, and theatres. Ask for work experience or shadowing. Most industry jobs come from who you know — start building relationships now.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         7. RESOURCES & NEXT STEPS
+    ================================================ -->
+    <section class="page-section" id="resources">
+      <div class="section-header">
+        <div class="tag bg-cyan cyan" style="border:1px solid;">Reference</div>
+        <h1>Resources & Next Steps 📚</h1>
+        <p>Everything you need to go further — curated specifically for your setup and goals.</p>
+      </div>
+
+      <!-- Gear Breakdown -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:4px;">🖥️ Your Studio Setup — Explained</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">You have access to some seriously professional gear. Here's what each piece does:</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">💻</span> <strong style="font-size:14px;">MacBook Neo</strong></div>
+            <div style="font-size:13px; color:var(--muted);">Your main production machine. Apple Silicon means Logic Pro runs blazingly fast — you can run dozens of plugins without breaking a sweat.</div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">🎹</span> <strong style="font-size:14px;">Akai Keyboard/Pads</strong></div>
+            <div style="font-size:13px; color:var(--muted);">MIDI controller for playing melodies, chords, and triggering drum sounds. The pads are great for beat-making — each pad can trigger a different drum sound.</div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">🎧</span> <strong style="font-size:14px;">Sony MDR-7506</strong></div>
+            <div style="font-size:13px; color:var(--muted);">Industry-standard studio headphones used in professional studios worldwide. They're flat and accurate — what you hear is genuinely what's there. Always mix on these before finalising.</div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">🎹</span> <strong style="font-size:14px;">Yamaha Clavinova</strong></div>
+            <div style="font-size:13px; color:var(--muted);">High-quality digital piano with weighted keys — excellent for recording realistic piano performances via MIDI. Use it to play in melodies and chord parts with real expression.</div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">🥁</span> <strong style="font-size:14px;">Roland V-Drums</strong></div>
+            <div style="font-size:13px; color:var(--muted);">Electronic drum kit that sends MIDI — record real drum performances with actual sticks. Much more organic-sounding than clicking in notes. Try layering V-Drum performances with Logic's Drummer plugin.</div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:grid; grid-template-columns:1fr 2fr; gap:16px; align-items:center;">
+            <div><span style="font-size:20px;">🎸</span> <strong style="font-size:14px;">Guitars</strong></div>
+            <div style="font-size:13px; color:var(--muted);">Record direct into your audio interface (DI) and use Logic's Amp Designer for virtual amp tones, or mic the amp with a Shure SM57 if you have one. Both acoustic and electric work brilliantly in Logic.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hearing Protection -->
+      <div class="card" style="margin-bottom:20px; border-color:rgba(255,107,107,0.3); background:rgba(255,107,107,0.04);">
+        <h3 style="font-size:18px; margin-bottom:12px; color:var(--coral);">🛡️ Hearing Health — Really Important!</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:16px;">
+          Your hearing is your most valuable tool as a music producer. Hearing damage is permanent and cumulative — it's essential to protect your ears from the start of your career.
+        </p>
+        <div class="grid-2">
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="font-size:13px; padding:10px 12px; background:var(--card); border-radius:8px; border-left:3px solid var(--coral);">🔊 Keep headphone volume below 85dB — if someone else can hear from your headphones, it's too loud</div>
+            <div style="font-size:13px; padding:10px 12px; background:var(--card); border-radius:8px; border-left:3px solid var(--coral);">⏰ Take a 10-minute break every hour of studio work — your ears (and brain) need rest</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="font-size:13px; padding:10px 12px; background:var(--card); border-radius:8px; border-left:3px solid var(--gold);">🎧 Use the volume limiter in your MacBook & iPhone settings — set to 85dB maximum</div>
+            <div style="font-size:13px; padding:10px 12px; background:var(--card); border-radius:8px; border-left:3px solid var(--gold);">🎶 At live gigs and concerts, wear ear plugs — musician's earplugs (like Earpeace) preserve sound quality</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- YouTube Channels -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:16px;">📺 Essential YouTube Channels</h3>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎛️</span>
+          <div><div>MusicTechHelpGuy</div><div class="rl-meta">Comprehensive Logic Pro tutorials, beginner to advanced</div></div>
+        </a>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎧</span>
+          <div><div>In The Mix</div><div class="rl-meta">Deep dives into mixing, mastering, and audio engineering concepts</div></div>
+        </a>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎸</span>
+          <div><div>Produce Like The Pros</div><div class="rl-meta">Professional production and mixing techniques</div></div>
+        </a>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎮</span>
+          <div><div>Game Audio Learning</div><div class="rl-meta">Introduction to Wwise, FMOD, and game audio production</div></div>
+        </a>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎹</span>
+          <div><div>Adam Neely</div><div class="rl-meta">Music theory made fascinating — goes deep but stays engaging</div></div>
+        </a>
+        <a class="resource-link" href="https://youtube.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🔬</span>
+          <div><div>Andrew Huang</div><div class="rl-meta">Creative production challenges, great for inspiration</div></div>
+        </a>
+      </div>
+
+      <!-- Websites -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:16px;">🌐 Useful Websites</h3>
+        <a class="resource-link" href="https://www.soundonsound.com" target="_blank" rel="noopener">
+          <span class="rl-icon">📖</span>
+          <div><div>Sound On Sound</div><div class="rl-meta">The bible of music technology — free articles and tutorials</div></div>
+        </a>
+        <a class="resource-link" href="https://www.musicradar.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎵</span>
+          <div><div>MusicRadar</div><div class="rl-meta">Gear reviews, tutorials, and free sample packs</div></div>
+        </a>
+        <a class="resource-link" href="https://www.prsformusic.com" target="_blank" rel="noopener">
+          <span class="rl-icon">©️</span>
+          <div><div>PRS for Music</div><div class="rl-meta">Register your original music and collect royalties</div></div>
+        </a>
+        <a class="resource-link" href="https://freesound.org" target="_blank" rel="noopener">
+          <span class="rl-icon">🔊</span>
+          <div><div>Freesound.org</div><div class="rl-meta">Huge library of free, Creative Commons sound effects</div></div>
+        </a>
+        <a class="resource-link" href="https://splice.com" target="_blank" rel="noopener">
+          <span class="rl-icon">🎁</span>
+          <div><div>Splice Sounds</div><div class="rl-meta">Professional-grade sample library (paid subscription, worth it later)</div></div>
+        </a>
+      </div>
+
+      <!-- Recommended Books -->
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:16px;">📗 Books Worth Reading</h3>
+        <div class="grid-2">
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <strong style="font-size:14px;">The Mixing Engineer's Handbook</strong>
+            <div style="font-size:12px; color:var(--coral); margin-top:2px;">Bobby Owsinski</div>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6;">The industry-standard mixing reference. Very practical, full of interviews with professional engineers.</p>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <strong style="font-size:14px;">Music Theory for Computer Musicians</strong>
+            <div style="font-size:12px; color:var(--cyan); margin-top:2px;">Michael Hewitt</div>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6;">Music theory explained specifically for people who produce on computers — perfect for your journey.</p>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <strong style="font-size:14px;">Producing Music with Ableton / Logic</strong>
+            <div style="font-size:12px; color:var(--purple); margin-top:2px;">Dennis DeSantis (Electronic Music Production)</div>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6;">Creative strategies for electronic music production — more about ideas than technical steps.</p>
+          </div>
+          <div style="padding:16px; background:var(--surface); border-radius:12px; border:1px solid var(--border);">
+            <strong style="font-size:14px;">All You Need to Know About the Music Business</strong>
+            <div style="font-size:12px; color:var(--gold); margin-top:2px;">Donald Passman</div>
+            <p style="font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6;">The essential guide to understanding contracts, royalties, and the business side. Read this when you're ready to start earning.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next big steps -->
+      <div style="padding:28px; background:linear-gradient(135deg,rgba(255,107,107,0.08),rgba(255,217,61,0.06),rgba(78,205,196,0.08)); border:1px solid rgba(255,107,107,0.2); border-radius:16px;">
+        <h3 style="margin-bottom:16px;">🚀 Your Next Big Steps</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-size:14px; padding:12px 16px; background:rgba(0,0,0,0.1); border-radius:10px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:20px;">1️⃣</span> Complete the first 5 Weekly Challenges to build foundational skills
+          </div>
+          <div style="font-size:14px; padding:12px 16px; background:rgba(0,0,0,0.1); border-radius:10px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:20px;">2️⃣</span> Publish your first 3 tracks on SoundCloud — even rough ones!
+          </div>
+          <div style="font-size:14px; padding:12px 16px; background:rgba(0,0,0,0.1); border-radius:10px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:20px;">3️⃣</span> Explore game audio by installing a free version of Wwise
+          </div>
+          <div style="font-size:14px; padding:12px 16px; background:rgba(0,0,0,0.1); border-radius:10px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:20px;">4️⃣</span> Research music technology courses at local colleges (for year 10/11 options)
+          </div>
+          <div style="font-size:14px; padding:12px 16px; background:rgba(0,0,0,0.1); border-radius:10px; display:flex; align-items:center; gap:12px;">
+            <span style="font-size:20px;">5️⃣</span> Register with PRS for Music when you start releasing original compositions
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================
+         8. PARENT / MENTOR NOTES
+    ================================================ -->
+    <section class="page-section" id="mentor">
+      <div class="section-header">
+        <div class="tag bg-purple purple" style="border:1px solid;">For Dad</div>
+        <h1>Parent & Mentor Notes 👨‍👧</h1>
+        <p>A guide for supporting a young aspiring music producer — how to help, when to step back, and how to make the most of the studio together.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:20px; border-color:rgba(199,125,255,0.3);">
+        <h3 style="font-size:18px; margin-bottom:12px;">💜 How to Be the Best Supporter</h3>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:flex; gap:12px; align-items:flex-start;">
+            <span style="font-size:22px; flex-shrink:0;">🎯</span>
+            <div>
+              <strong style="font-size:14px;">Let her lead the sessions</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">When in the studio together, resist the urge to take over — even if you could do something faster. Ask "what do you want to try next?" rather than directing. Her creative confidence will grow enormously when she drives the session.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:flex; gap:12px; align-items:flex-start;">
+            <span style="font-size:22px; flex-shrink:0;">🎧</span>
+            <div>
+              <strong style="font-size:14px;">Ask to hear her work</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">Regularly asking "can I listen to what you've been making?" shows you value her work. Listen all the way through, then ask what she's most proud of in the track. Specific, genuine praise ("I love that bass line at 0:45") means more than general compliments.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:flex; gap:12px; align-items:flex-start;">
+            <span style="font-size:22px; flex-shrink:0;">🤔</span>
+            <div>
+              <strong style="font-size:14px;">Ask curious questions, not evaluative ones</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">"What were you going for with this?" is better than "Is that supposed to sound like that?" Curiosity invites conversation; judgement shuts it down. The teenage brain is especially sensitive to perceived criticism of their creative work.</p>
+            </div>
+          </div>
+          <div style="padding:14px 16px; background:var(--surface); border-radius:10px; display:flex; gap:12px; align-items:flex-start;">
+            <span style="font-size:22px; flex-shrink:0;">🔇</span>
+            <div>
+              <strong style="font-size:14px;">Protect her studio time</strong>
+              <p style="font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6;">Deep creative work requires uninterrupted time. If she's in the flow, avoid calling her for non-urgent things. Even 90 minutes of uninterrupted studio time a few times a week will lead to remarkable progress over months.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">🔍 How to Review Her Work in the Studio</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:16px;">When she wants to share or you're reviewing together, here's a useful framework:</p>
+        <div class="grid-2">
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--green);">Great things to say</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"What's your favourite part of this track?"</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"How did you make that sound?"</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"This is really coming along — I can hear how much you've improved."</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"What do you want to work on next?"</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"I really like the [specific element]."</li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size:14px; margin-bottom:10px; color:var(--coral);">Things to avoid</h4>
+            <ul style="list-style:none; display:flex; flex-direction:column; gap:7px;">
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Unsolicited technical criticism</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Comparing to professional tracks ("but it doesn't sound like…")</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Grabbing the keyboard or mouse without asking</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">Checking your phone while listening</li>
+              <li style="font-size:13px; padding:8px 12px; background:var(--surface); border-radius:8px;">"Why don't you try…" (unless asked)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="font-size:18px; margin-bottom:12px;">📅 Suggested Weekly Routine</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="padding:12px 16px; background:var(--surface); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="font-weight:600; font-size:14px;">🎯 Watching & Learning</div>
+            <div style="font-size:13px; color:var(--muted);">30–45 min, 3× per week — work through the tutorial videos</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--surface); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="font-weight:600; font-size:14px;">🎹 Hands-on Practice</div>
+            <div style="font-size:13px; color:var(--muted);">45–60 min, 3× per week — try things out, experiment freely</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--surface); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="font-weight:600; font-size:14px;">🏆 Weekly Challenge Work</div>
+            <div style="font-size:13px; color:var(--muted);">1–2 hours at weekend — focus on completing one challenge</div>
+          </div>
+          <div style="padding:12px 16px; background:var(--surface); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="font-weight:600; font-size:14px;">👨‍👧 Dad & Daughter Studio Time</div>
+            <div style="font-size:13px; color:var(--muted);">30–60 min, once per week — listen together, set up gear, celebrate progress</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="background:linear-gradient(135deg,rgba(199,125,255,0.08),rgba(78,205,196,0.08)); border-color:rgba(199,125,255,0.25);">
+        <h3 style="font-size:18px; margin-bottom:12px;">🌟 The Bigger Picture</h3>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:12px;">
+          Music production is a brilliant skill regardless of whether it becomes a career. It develops: creativity, attention to detail, patience, technical problem-solving, listening skills, and emotional intelligence. Even if her path changes, these skills transfer everywhere.
+        </p>
+        <p style="font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:12px;">
+          The fact that she has a full studio at home and a supportive parent willing to invest in her passion is genuinely rare and special. The most important thing is that she enjoys the journey — the skills and opportunities will follow naturally from that joy.
+        </p>
+        <p style="font-size:14px; font-style:italic; color:var(--heading); line-height:1.7;">
+          "The goal isn't to become a professional musician. The goal is to develop a deep love for the craft, the skills to realise your creative vision, and the confidence to keep creating no matter what."
+        </p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="margin-left:0; padding:28px 40px; border-top:1px solid var(--border); background:var(--surface); text-align:center;">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:4px;">
+        🎛️ <strong style="color:var(--heading)">Beat Lab</strong> — My Music Production Journey
+      </div>
+      <div style="font-size:12px; color:var(--muted);">
+        🎂 Built with love for your 14th Birthday · May 2026 · 
+        <span style="color:var(--coral);">Keep creating. Keep dreaming. Keep making noise. 🎵</span>
+      </div>
+    </footer>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ====================================================
+     JAVASCRIPT
+==================================================== -->
+<script>
+/* ============================================================
+   DATA — Edit this section to customise content
+============================================================ */
+
+// Motivational quotes — add your own!
+const QUOTES = [
+  { text: "Music is the shorthand of emotion.", author: "Leo Tolstoy" },
+  { text: "Without music, life would be a mistake.", author: "Friedrich Nietzsche" },
+  { text: "One good thing about music — when it hits you, you feel no pain.", author: "Bob Marley" },
+  { text: "The beautiful thing about learning is that nobody can take it away from you.", author: "B.B. King" },
+  { text: "Every artist was first an amateur.", author: "Ralph Waldo Emerson" },
+  { text: "Music gives a soul to the universe, wings to the mind, flight to the imagination.", author: "Plato" },
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { text: "It's not about perfect. It's about effort.", author: "Jillian Michaels" },
+  { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+  { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "Production is the space between the imagination and reality.", author: "Rick Rubin" },
+];
+
+// Logic Pro skills checklist
+const LOGIC_SKILLS = [
+  { id: "l1",  title: "Install Logic Pro and open it for the first time",         desc: "Explore the Welcome screen and sample project" },
+  { id: "l2",  title: "Create a new empty project",                               desc: "Set tempo, key, and sample rate" },
+  { id: "l3",  title: "Add a Software Instrument track",                          desc: "Use a built-in piano or synth sound" },
+  { id: "l4",  title: "Connect and test your Akai MIDI keyboard",                 desc: "Check it triggers sounds in Logic" },
+  { id: "l5",  title: "Record a simple MIDI melody",                              desc: "Even just 4 or 8 notes — just hit record!" },
+  { id: "l6",  title: "Use the Piano Roll to edit MIDI notes",                    desc: "Move, resize, and delete notes" },
+  { id: "l7",  title: "Add an Audio track and set up an input",                   desc: "Test your mic or line input" },
+  { id: "l8",  title: "Browse and add an Apple Loop",                             desc: "Find a drum loop and drag it to the timeline" },
+  { id: "l9",  title: "Add a second instrument and layer with the loop",          desc: "Build a simple arrangement" },
+  { id: "l10", title: "Open the Mixer and adjust volumes",                        desc: "Balance your tracks so nothing is too loud" },
+  { id: "l11", title: "Add Channel EQ to a track",                                desc: "Try boosting the high frequencies" },
+  { id: "l12", title: "Add Reverb (ChromaVerb) to a track",                      desc: "Make it sound like it's in a room" },
+  { id: "l13", title: "Set up basic automation",                                  desc: "Press A — draw a volume fade at the end" },
+  { id: "l14", title: "Export/Bounce your first track",                           desc: "Share it → Export Song to Disk → AAC or WAV" },
+];
+
+// Weekly challenges
+const CHALLENGES = [
+  {
+    week: "Week 1",
+    title: "Your First Loop 🎵",
+    desc: "Create an 8-bar loop using at least 3 elements: a drum/beat, a bass or chord instrument, and a melody. Use Logic's built-in sounds or Apple Loops. It doesn't have to be perfect — just get something playing!",
+    tags: ["Beginner", "Logic Pro", "Loops"],
+    color: "coral",
+  },
+  {
+    week: "Week 2",
+    title: "Melody & Chords 🎹",
+    desc: "Write a 16-bar piece using chords on your Clavinova or Akai keyboard. Record it live into Logic using a Software Instrument track. Try the chord progression Am – F – C – G (or choose your own). Add a simple melody on top.",
+    tags: ["Music Theory", "MIDI", "Piano"],
+    color: "cyan",
+  },
+  {
+    week: "Week 3",
+    title: "Drum Machine Deep Dive 🥁",
+    desc: "Build a drum beat from scratch using Logic's Drummer plugin or the Akai pads. Create 4 variations — verse beat, chorus beat, breakdown, and fill. Focus on groove and how different rhythms feel emotionally.",
+    tags: ["Drums", "Rhythm", "Groove"],
+    color: "gold",
+  },
+  {
+    week: "Week 4",
+    title: "Record a Real Instrument 🎸",
+    desc: "Record a guitar or piano performance directly into Logic — at least 8 bars. Pay attention to levels (don't clip!). Edit the recording in the Audio editor to fix any timing issues. This one will teach you a LOT about recording.",
+    tags: ["Audio Recording", "Instruments", "Editing"],
+    color: "purple",
+  },
+  {
+    week: "Week 5",
+    title: "Full Song Structure 🏗️",
+    desc: "Create a track with a proper song structure: intro (8 bars), verse (16 bars), chorus (16 bars), bridge (8 bars), final chorus (16 bars), outro (8 bars). Focus on making the chorus feel bigger than the verse.",
+    tags: ["Song Structure", "Arrangement"],
+    color: "green",
+  },
+  {
+    week: "Week 6",
+    title: "Mix Your Track 🎚️",
+    desc: "Take your Week 5 song and properly mix it. Set all your levels, pan instruments, add EQ to each track, add compression to drums and vocals (or main instrument), add reverb/delay for depth. Compare to a professional track you love.",
+    tags: ["Mixing", "EQ", "Compression"],
+    color: "coral",
+  },
+  {
+    week: "Week 7",
+    title: "Produce to a Brief — Advert 📺",
+    desc: "Brief: Compose 30 seconds of music for a chocolate advert — it should feel warm, indulgent, and slightly playful. No lyrics needed, just music. Think about what emotions chocolate evokes. This is exactly how commercial music works!",
+    tags: ["Brief", "Commercial", "Short-form"],
+    color: "gold",
+  },
+  {
+    week: "Week 8",
+    title: "Game Sound Effects 🎮",
+    desc: "Design 5 sound effects for a game: a jump, a coin collect, a level complete, a game over, and an ambient background loop. Use Logic's ES2 synth, recordings from around the house, or Freesound.org. Think about how each should feel in a game.",
+    tags: ["Game Audio", "Sound Design", "SFX"],
+    color: "purple",
+  },
+  {
+    week: "Week 9",
+    title: "Score to Picture 🎬",
+    desc: "Find a short royalty-free video clip (Pixabay, Pexels) — 60–90 seconds. Import it into Logic and write music to match what's on screen. This is called 'scoring to picture' — one of the most satisfying and valuable skills you can have.",
+    tags: ["Film Scoring", "Sync", "Creative"],
+    color: "cyan",
+  },
+  {
+    week: "Week 10",
+    title: "Collab & Feedback Challenge 👥",
+    desc: "Share one of your tracks with someone whose opinion you trust (a friend, family member, or online community). Ask them: What do you feel when you hear it? What's your favourite moment? What would you change? Use their feedback to make one specific improvement.",
+    tags: ["Feedback", "Community", "Growth"],
+    color: "green",
+  },
+  {
+    week: "Week 12",
+    title: "Portfolio Piece 🌟",
+    desc: "Create your best track yet — something you're genuinely proud of and would show to a music teacher or industry professional. Spend at least 2–3 sessions on this. Mix it carefully, export it at 320kbps MP3 and WAV. This goes straight to your portfolio!",
+    tags: ["Portfolio", "Showcase", "Best Work"],
+    color: "coral",
+  },
+  {
+    week: "Bonus",
+    title: "Free Creative Day 🎨",
+    desc: "No rules. No brief. No structure. Open Logic and make literally anything that feels fun and interesting to you today. Try a genre you've never done. Sample something weird. Break the rules. Some of the best creative breakthroughs come from completely unstructured play.",
+    tags: ["Free Play", "Creativity", "Experimental"],
+    color: "purple",
+  },
+];
+
+/* ============================================================
+   STATE & STORAGE
+============================================================ */
+
+function getState() {
+  try {
+    return JSON.parse(localStorage.getItem('beatlab_state') || '{}');
+  } catch (e) {
+    return {};
+  }
+}
+
+function setState(newState) {
+  const current = getState();
+  const merged = Object.assign({}, current, newState);
+  localStorage.setItem('beatlab_state', JSON.stringify(merged));
+}
+
+function getChecked(id) {
+  return getState()['checked_' + id] === true;
+}
+
+function toggleChecked(id) {
+  const s = getState();
+  s['checked_' + id] = !s['checked_' + id];
+  setState(s);
+  updateStats();
+}
+
+function getNotes(id) {
+  return getState()['notes_' + id] || '';
+}
+
+function setNotes(id, val) {
+  const s = getState();
+  s['notes_' + id] = val;
+  setState(s);
+}
+
+/* ============================================================
+   RENDER FUNCTIONS
+============================================================ */
+
+function renderLogicChecklist() {
+  const container = document.getElementById('logic-checklist');
+  if (!container) return;
+  container.innerHTML = '';
+  LOGIC_SKILLS.forEach(item => {
+    const done = getChecked(item.id);
+    const div = document.createElement('div');
+    div.className = 'checklist-item' + (done ? ' done' : '');
+    div.onclick = () => { toggleChecked(item.id); renderLogicChecklist(); };
+    div.innerHTML = `
+      <div class="check-circle">${done ? '✓' : ''}</div>
+      <div>
+        <div class="item-title">${item.title}</div>
+        <div class="item-desc">${item.desc}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function renderChallenges() {
+  const container = document.getElementById('challenges-list');
+  if (!container) return;
+  container.innerHTML = '';
+  CHALLENGES.forEach((ch, idx) => {
+    const id = 'ch_' + idx;
+    const done = getChecked(id);
+    const savedNotes = getNotes(id);
+    const div = document.createElement('div');
+    div.className = 'challenge-card' + (done ? ' completed' : '');
+    const colorMap = {
+      coral: '#FF6B6B', gold: '#FFD93D', cyan: '#4ECDC4',
+      purple: '#C77DFF', green: '#6BCB77'
+    };
+    div.innerHTML = `
+      <span class="week-badge">${ch.week}</span>
+      ${done ? '<span style="float:right;font-size:20px;">✅</span>' : ''}
+      <div class="challenge-title">${ch.title}</div>
+      <div class="challenge-desc">${ch.desc}</div>
+      <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;">
+        ${ch.tags.map(t => `<span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:rgba(${hexToRgb(colorMap[ch.color])},0.12);color:${colorMap[ch.color]};border:1px solid rgba(${hexToRgb(colorMap[ch.color])},0.3);">${t}</span>`).join('')}
+      </div>
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="complete-btn ${done ? 'done' : ''}" onclick="toggleChallengeComplete('${id}', ${idx})">${done ? '✓ Completed!' : 'Mark Complete'}</button>
+        <button class="expand-btn" onclick="toggleNotes('notes-${id}')">📝 ${savedNotes ? 'View notes' : 'Add notes'} ↓</button>
+      </div>
+      <div id="notes-${id}" class="collapsible ${savedNotes ? 'open' : ''}">
+        <textarea class="notes-input" rows="3" placeholder="Your notes, ideas, and reflections about this challenge..." 
+          onchange="setNotes('${id}', this.value)">${savedNotes}</textarea>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function hexToRgb(hex) {
+  // Convert #RRGGBB to "r,g,b"
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+function toggleChallengeComplete(id, idx) {
+  toggleChecked(id);
+  renderChallenges();
+}
+
+function toggleNotes(notesId) {
+  const el = document.getElementById(notesId);
+  if (el) el.classList.toggle('open');
+}
+
+/* ============================================================
+   STATS
+============================================================ */
+
+function updateStats() {
+  const state = getState();
+  
+  // Logic skills
+  const logicDone = LOGIC_SKILLS.filter(s => state['checked_' + s.id]).length;
+  const totalSkills = LOGIC_SKILLS.length;
+
+  // Challenges
+  const challengesDone = CHALLENGES.filter((_, i) => state['checked_ch_' + i]).length;
+
+  // Streak
+  const streak = state.streak || 0;
+
+  // Update displays
+  const el = id => document.getElementById(id);
+  if (el('stat-completed'))  el('stat-completed').textContent  = logicDone;
+  if (el('stat-challenges')) el('stat-challenges').textContent = challengesDone;
+  if (el('stat-streak'))     el('stat-streak').textContent     = streak;
+  if (el('streak-count'))    el('streak-count').textContent    = streak;
+  if (el('stat-bar'))        el('stat-bar').style.width        = Math.round((logicDone/totalSkills)*100) + '%';
+}
+
+function updateStreak() {
+  const state = getState();
+  const today = new Date().toDateString();
+  const last = state.lastVisit;
+  
+  let streak = state.streak || 0;
+  
+  if (last !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (last === yesterday.toDateString()) {
+      streak += 1;
+    } else if (!last) {
+      streak = 1;
+    } else {
+      streak = 1; // reset
+    }
+    setState({ lastVisit: today, streak });
+  }
+  
+  updateStats();
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+const sectionNames = {
+  home:        'Dashboard',
+  logic:       'Logic Pro Basics',
+  skills:      'Core Skills & Technique',
+  engineering: 'Audio Engineering Areas',
+  challenges:  'Weekly Challenges',
+  business:    'Business & Career',
+  resources:   'Resources & Next Steps',
+  mentor:      'Parent / Mentor Notes',
+};
+
+function showSection(id) {
+  // Hide all sections
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('#sidebar nav a').forEach(a => a.classList.remove('active'));
+  
+  // Show target
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+  
+  // Update breadcrumb
+  const bc = document.getElementById('breadcrumb-text');
+  if (bc) bc.textContent = sectionNames[id] || id;
+  
+  // Update active nav link
+  document.querySelectorAll('#sidebar nav a').forEach(a => {
+    if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(`'${id}'`)) {
+      a.classList.add('active');
+    }
+  });
+  
+  // Scroll to top
+  window.scrollTo(0, 0);
+  
+  // Close sidebar on mobile
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+
+/* ============================================================
+   THEME
+============================================================ */
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('theme-btn');
+  if (html.getAttribute('data-theme') === 'dark') {
+    html.setAttribute('data-theme', 'light');
+    btn.textContent = '☀️';
+    setState({ theme: 'light' });
+  } else {
+    html.setAttribute('data-theme', 'dark');
+    btn.textContent = '🌙';
+    setState({ theme: 'dark' });
+  }
+}
+
+function applyTheme() {
+  const saved = getState().theme;
+  const btn = document.getElementById('theme-btn');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    if (btn) btn.textContent = '☀️';
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    if (btn) btn.textContent = '🌙';
+  }
+}
+
+/* ============================================================
+   NAME
+============================================================ */
+
+function saveName() {
+  const input = document.getElementById('name-input');
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) return;
+  setState({ userName: name });
+  applyName(name);
+  document.getElementById('name-setup').style.display = 'none';
+}
+
+function applyName(name) {
+  const el = document.getElementById('user-name-display');
+  if (el) el.textContent = name + '!';
+}
+
+function checkNameSetup() {
+  const state = getState();
+  const nameSetup = document.getElementById('name-setup');
+  if (!state.userName) {
+    if (nameSetup) nameSetup.style.display = 'block';
+  } else {
+    applyName(state.userName);
+    if (nameSetup) nameSetup.style.display = 'none';
+  }
+}
+
+// Allow Enter key to save name
+document.addEventListener('DOMContentLoaded', () => {
+  const nameInput = document.getElementById('name-input');
+  if (nameInput) {
+    nameInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') saveName();
+    });
+  }
+});
+
+/* ============================================================
+   QUOTES
+============================================================ */
+
+let quoteIndex = 0;
+
+function rotateQuote() {
+  const q = QUOTES[quoteIndex % QUOTES.length];
+  const textEl = document.getElementById('quote-text');
+  const authEl = document.getElementById('quote-author');
+  if (textEl) {
+    textEl.style.opacity = '0';
+    setTimeout(() => {
+      textEl.textContent = q.text;
+      textEl.style.opacity = '1';
+      textEl.style.transition = 'opacity 0.5s';
+    }, 300);
+  }
+  if (authEl) authEl.textContent = '— ' + q.author;
+  quoteIndex++;
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+
+function init() {
+  applyTheme();
+  checkNameSetup();
+  renderLogicChecklist();
+  renderChallenges();
+  updateStreak();
+  
+  // Shuffle starting quote
+  quoteIndex = Math.floor(Math.random() * QUOTES.length);
+  rotateQuote();
+  
+  // Rotate quote every 12 seconds
+  setInterval(rotateQuote, 12000);
+}
+
+// Run on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
